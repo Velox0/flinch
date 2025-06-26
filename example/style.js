@@ -43,13 +43,13 @@ export const style = html`<style nonce="{{NONCE}}">
     line-height: 1.6;
     color: #c0c0c0;
   }
-  a {
+  a.link {
     color: #7df9aa;
     text-decoration: none;
     border-bottom: 1px dashed #7df9aa;
     transition: border 0.2s;
   }
-  a:hover {
+  a.link:hover {
     border-bottom: 1px solid #7df9aa;
   }
   ::selection {

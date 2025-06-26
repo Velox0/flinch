@@ -34,7 +34,10 @@ const page = (name) => {
       ${head()}
       <body>
         <h1>Hello, ${name}</h1>
-        <h2>What is Flinch</h2>
+        <h2>
+          What is
+          <a class="link" href="https://github.com/velox0/flinch">Flinch</a>
+        </h2>
         <p>
           Flinch is a lightweight, component-like UI library for generating HTML
           using template literals. It's designed to be simple, minimal, and easy
@@ -50,6 +53,15 @@ const page = (name) => {
           If you're looking for a straightforward way to build dynamic HTML in
           your backend or full-stack apps without committing to a full frontend
           framework, Flinch might be for you.
+        </p>
+        <p>
+          <a href="https://github.com/velox0/flinch">
+            <img
+              style="vertical-align: middle"
+              src="https://img.shields.io/npm/v/@velox0/flinch.svg?style=flat-square&color=7df9aa"
+              alt="npm version"
+            />
+          </a>
         </p>
         ${scr}
       </body>
