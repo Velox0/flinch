@@ -11,6 +11,9 @@ jobs:
   test-example:
     runs-on: ubuntu-latest
 
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
