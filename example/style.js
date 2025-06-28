@@ -17,11 +17,15 @@ export const style = html`<style nonce="{{NONCE}}">
   }
   body {
     display: flex;
+    padding: 3rem 0;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     min-height: 100vh;
-    padding: 0 1.5rem;
+    min-width: 300px;
+    max-width: 800px;
+    width: 70%;
+    margin: 0 auto;
   }
   h1 {
     font-size: 2.5rem;
@@ -52,7 +56,44 @@ export const style = html`<style nonce="{{NONCE}}">
   a.link:hover {
     border-bottom: 1px solid #7df9aa;
   }
+  a.normal-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  a.link-no-underline {
+    color: #7df9aa;
+    text-decoration: none;
+  }
   ::selection {
     background: #7df9aa33;
+  }
+  .left-align {
+    text-align: left;
+    width: 100%;
+  }
+  .strong {
+    font-weight: 700;
+  }
+  hr {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid #c0c0c0;
+  }
+  .cool-card {
+    border-radius: 0.5rem;
+    transition: 0.2s;
+    padding: 0.5rem;
+  }
+  .cool-card:hover {
+    scale: 1.01;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .cool-card:active {
+    scale: 0.99;
+  }
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>`;
