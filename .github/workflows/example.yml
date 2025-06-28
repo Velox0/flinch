@@ -1,0 +1,94 @@
+name: Run Example
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  test-example:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Test example server
+        run: |
+          # Start the server in the background
+          npm run example &
+          SERVER_PID=$!
+
+          # Wait for server to be ready (max 30 seconds)
+          echo "Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:3000/home/Test%20User > /dev/null 2>&1; then
+              echo "✅ Server is ready!"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "❌ Server failed to start within 30 seconds"
+              kill $SERVER_PID 2>/dev/null || true
+              exit 1
+            fi
+            sleep 1
+          done
+
+          # Test all endpoints
+          echo "Testing endpoints..."
+
+          # Test home page
+          if curl -s -f http://localhost:3000/home/Test%20User > /dev/null; then
+            echo "✅ Home page endpoint working"
+          else
+            echo "❌ Home page endpoint failed"
+            kill $SERVER_PID 2>/dev/null || true
+            exit 1
+          fi
+
+          # Test live elements page
+          if curl -s -f http://localhost:3000/live > /dev/null; then
+            echo "✅ Live elements endpoint working"
+          else
+            echo "❌ Live elements endpoint failed"
+            kill $SERVER_PID 2>/dev/null || true
+            exit 1
+          fi
+
+          # Test blogs page
+          if curl -s -f http://localhost:3000/blogs > /dev/null; then
+            echo "✅ Blogs endpoint working"
+          else
+            echo "❌ Blogs endpoint failed"
+            kill $SERVER_PID 2>/dev/null || true
+            exit 1
+          fi
+
+          # Test API endpoint
+          if curl -s -f http://localhost:3000/api/data > /dev/null; then
+            echo "✅ API endpoint working"
+          else
+            echo "❌ API endpoint failed"
+            kill $SERVER_PID 2>/dev/null || true
+            exit 1
+          fi
+
+          # Clean up
+          echo "Cleaning up..."
+          kill $SERVER_PID 2>/dev/null || true
+
+          echo "🎉 All tests passed! Example server is working correctly."
