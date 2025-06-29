@@ -9,6 +9,10 @@
 
 A **lightweight, streaming-first component-based UI library** for building modern web applications with template literals. Perfect for server-side rendering, live updates, and creating dynamic HTML components.
 
+## ⚠️ Development Status
+
+**This library is currently in early stages of development and is primarily for personal use. The API is changing drastically and things can break frequently between versions. Use at your own risk in production environments.**
+
 ## ✨ Features
 
 - 🎯 **Template Literals**: Write HTML naturally with JavaScript
@@ -18,6 +22,7 @@ A **lightweight, streaming-first component-based UI library** for building moder
 - 🚀 **Framework Agnostic**: Works with Express, Fastify, or any Node.js server
 - 📦 **Tiny Bundle**: Only ~2.5KB minified and gzipped
 - 🔧 **TypeScript Ready**: Full TypeScript support with type definitions
+- 🎭 **Virtual DOM Simulation**: VirtualElement class for DOM-like operations
 
 ## 📦 Installation
 
@@ -45,23 +50,20 @@ console.log(template.toString());
 // Output: <div class="user-card"><h2>Hello, John!</h2><p>You are 25 years old.</p></div>
 ```
 
-### Live Elements (Auto-updating)
+### Live Elements (Auto-updating) - New API
 
 ```javascript
 import { html, LiveElement } from "@velox0/flinch";
 
-// Create a live element that updates every 2 seconds
-const liveCounter = new LiveElement(
-  "div",
-  { class: "counter", id: "live-counter" },
-  { initial: "Loading..." },
-  "/api/counter",
-  2000,
-  (data) => `Count: ${JSON.parse(data).count}`,
-  false,
-  true,
-  "text"
-);
+// Create a live element using the new options object pattern
+const liveCounter = new LiveElement("div", {
+  props: { class: "counter", id: "live-counter" },
+  state: { initial: "Loading..." },
+  requestUrl: "/api/counter",
+  interval: 2000,
+  callback: (data) => `Count: ${JSON.parse(data).count}`,
+  resType: "text",
+});
 
 const page = html`
   <!DOCTYPE html>
@@ -75,6 +77,29 @@ const page = html`
     </body>
   </html>
 `;
+```
+
+### Virtual Elements (DOM Simulation)
+
+```javascript
+import { VirtualElement } from "@velox0/flinch";
+
+// Create virtual elements for DOM-like operations
+const virtualDiv = new VirtualElement("div", {
+  id: "my-element",
+  className: "container",
+  innerHTML: "<p>Hello World</p>",
+  style: { backgroundColor: "blue", color: "white" },
+  attributes: { "data-test": "value" },
+});
+
+// Add event listeners
+virtualDiv.addEventListener("click", (event) => {
+  console.log("Element clicked!");
+});
+
+// Dispatch events
+virtualDiv.dispatchEvent("click");
 ```
 
 ### Server-Side Streaming
@@ -125,9 +150,24 @@ result.updateMatches(/Hello/g, "Hi"); // Replace patterns
 result.apply((str) => str.toUpperCase()); // Apply function to all strings
 ```
 
-### `LiveElement`
+### `LiveElement` (Updated API)
 
-Creates auto-updating HTML elements that fetch data from APIs.
+Creates auto-updating HTML elements that fetch data from APIs. Now supports both legacy and new options object patterns.
+
+#### New Options Object Pattern (Recommended)
+
+```javascript
+const liveElement = new LiveElement(tag, {
+  props: Record<string, any>, // HTML attributes object
+  state: Record<string, any>, // Initial state object (state.initial sets innerHTML)
+  requestUrl: string, // API endpoint URL
+  interval: number, // Update interval in milliseconds (0 = fetch once)
+  callback: CallableFunction, // Data processing function
+  resType: string // Response type ('text', 'json', etc.)
+});
+```
+
+#### Legacy Pattern (Still Supported)
 
 ```javascript
 const liveElement = new LiveElement(
@@ -136,11 +176,47 @@ const liveElement = new LiveElement(
   state, // Initial state object
   requestUrl, // API endpoint URL
   interval, // Update interval in milliseconds
-  renderData, // Data processing function
-  innerHTML, // Use innerHTML instead of innerText
-  makeInitialRequest, // Make initial request on load
+  callback, // Data processing function
   resType // Response type ('text', 'json', etc.)
 );
+```
+
+#### LiveElement Methods
+
+```javascript
+const element = new LiveElement("div", {
+  /* options */
+});
+
+// Render the element
+await element.render(); // Returns HTML string with embedded script
+
+// Clone the element with a new ID
+const cloned = element.clone(); // Auto-generates new ID
+const clonedWithId = element.clone("custom-id"); // Use custom ID
+```
+
+### `VirtualElement`
+
+Simulates DOM element behavior for server-side operations.
+
+```javascript
+const element = new VirtualElement(tagName, {
+  id?: string,
+  className?: string,
+  innerText?: string,
+  innerHTML?: string,
+  style?: Record<string, string>,
+  attributes?: Record<string, string>,
+  children?: VirtualNode[]
+});
+
+// Methods
+element.setAttribute(name, value);
+element.getAttribute(name);
+element.removeAttribute(name);
+element.addEventListener(event, callback);
+element.dispatchEvent(event, eventObj);
 ```
 
 ### `renderToStream(component)`
@@ -186,13 +262,12 @@ app.get("/dashboard", async (req, res) => {
 Create live-updating dashboards with minimal JavaScript:
 
 ```javascript
-const liveStats = new LiveElement(
-  "div",
-  { class: "stats-container" },
-  { initial: "Loading stats..." },
-  "/api/stats",
-  5000,
-  (data) => {
+const liveStats = new LiveElement("div", {
+  props: { class: "stats-container" },
+  state: { initial: "Loading stats..." },
+  requestUrl: "/api/stats",
+  interval: 5000,
+  callback: (data) => {
     const stats = JSON.parse(data);
     return `
       <div class="stat">
@@ -201,8 +276,8 @@ const liveStats = new LiveElement(
       </div>
     `;
   },
-  true
-);
+  resType: "text",
+});
 ```
 
 ### 3. **API Response Templates**
@@ -268,6 +343,29 @@ const page = html`
     ${Card("Welcome", "Hello World")} ${Button("Click me", 'alert("Hello!")')}
   </div>
 `;
+```
+
+### Virtual DOM Operations
+
+```javascript
+const container = new VirtualElement("div", {
+  id: "app",
+  className: "container",
+});
+
+const child = new VirtualElement("p", {
+  innerText: "Hello World",
+  style: { color: "blue" },
+});
+
+container.appendChild(child);
+
+// Simulate DOM events
+child.addEventListener("click", () => {
+  console.log("Child clicked!");
+});
+
+child.dispatchEvent("click");
 ```
 
 ## 📊 Performance
