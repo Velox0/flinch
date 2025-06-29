@@ -98,9 +98,9 @@ renderData(await res.${this.resType ? this.resType : "text"}());
     return nextHex;
   }
 
-  clone() {
+  clone(id?: string) {
     return new LiveElement(this.tag, {
-      props: { ...this.props },
+      props: { ...this.props, id: id ?? this.nextHexId() },
       state: this.state,
       requestUrl: this.requestUrl,
       interval: this.interval,
