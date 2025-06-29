@@ -19,7 +19,6 @@ export const style = html`<style nonce="{{NONCE}}">
     display: flex;
     padding: 3rem 0;
     flex-direction: column;
-    align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
     min-width: 300px;
@@ -95,5 +94,15 @@ export const style = html`<style nonce="{{NONCE}}">
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  /* scrollbar */
+  ::-webkit-scrollbar {
+    width: 0.45rem;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(125, 249, 170, 0.38);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #7df9aa;
   }
 </style>`;
