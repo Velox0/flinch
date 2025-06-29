@@ -25,38 +25,38 @@ export class LiveElement {
     propsOrOptions:
       | Record<string, any>
       | {
-          props: Record<string, any>;
-          state: Record<string, any>;
-          requestUrl: string;
-          interval: number;
-          callback: CallableFunction;
-          resType: string;
+          props?: Record<string, any>;
+          state?: Record<string, any>;
+          requestUrl?: string;
+          interval?: number;
+          callback?: CallableFunction;
+          resType?: string;
         },
     state?: Record<string, any>,
     requestUrl?: string,
-    interval: number = 1000,
-    callback: CallableFunction = () => {},
-    resType: string = "text"
+    interval?: number,
+    callback?: CallableFunction,
+    resType?: string
   ) {
     this.tag = tag;
 
     // Check if second parameter is an options object
-    if ("props" in propsOrOptions) {
+    if ("interval" in propsOrOptions || "requestUrl" in propsOrOptions) {
       // First constructor pattern
-      this.props = propsOrOptions.props;
-      this.state = propsOrOptions.state;
-      this.requestUrl = propsOrOptions.requestUrl;
-      this.interval = propsOrOptions.interval;
-      this.callback = propsOrOptions.callback;
-      this.resType = propsOrOptions.resType;
+      this.props = propsOrOptions.props || {};
+      this.state = propsOrOptions.state || {};
+      this.requestUrl = propsOrOptions.requestUrl || "";
+      this.interval = propsOrOptions.interval || 0;
+      this.callback = propsOrOptions.callback || (() => {});
+      this.resType = propsOrOptions.resType || "text";
     } else {
       // Second constructor pattern
       this.props = propsOrOptions;
       this.state = state || {};
       this.requestUrl = requestUrl || "";
-      this.interval = interval;
-      this.callback = callback;
-      this.resType = resType;
+      this.interval = interval || 0;
+      this.callback = callback || (() => {});
+      this.resType = resType || "text";
     }
 
     this.id = this.props.id || `${randomBytes(16).toString("hex")}`;
