@@ -1,13 +1,14 @@
 {
   "name": "@velox0/flinch",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A streaming-first component-based UI library for NestJS",
   "type": "module",
   "keywords": [
     "ui",
     "components",
     "streaming",
-    "nestjs"
+    "front-end",
+    "server-side-rendering"
   ],
   "author": "velox0",
   "license": "MIT",
@@ -23,6 +24,7 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
+    "types": "./dist/index.d.ts",
     "import": "./dist/index.mjs",
     "require": "./dist/index.cjs"
   },
@@ -33,13 +35,11 @@
     "test": "vitest",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write src",
-    "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist",
-    "dev": "tsup src/index.ts --watch",
-    "example": "nodemon example/sample.js"
+    "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist --minify",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --out-dir dist  --watch src/**.ts --minify",
+    "example": "node example/main.js"
   },
   "devDependencies": {
-    "@nestjs/common": "^11.1.3",
-    "@nestjs/core": "^11.1.3",
     "@types/node": "^24.0.4",
     "@typescript-eslint/eslint-plugin": "^8.35.0",
     "@typescript-eslint/parser": "^8.35.0",
@@ -49,7 +49,6 @@
     "express": "^5.1.0",
     "marked": "^16.0.0",
     "mongoose": "^8.16.1",
-    "nodemon": "^3.1.10",
     "prettier": "^3.6.1",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
